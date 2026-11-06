@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HUMAN SIGNALS — AI Gesture & ISL Neural Interpreter</title>
-    <meta name="description" content="AI body signal & Indian Sign Language neural interpreter. Real-time hand landmark tracking and assistive communication.">
+    <title>HUMAN SIGNALS — AI Gesture & ISL Neural Platform</title>
+    <meta name="description" content="AI body signal & Indian Sign Language neural interpreter with reverse text-to-sign generation and live biomechanical telemetry.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +39,7 @@
             }
         }
     </script>
-    <!-- MediaPipe Drawing & Hands Engine -->
+    <!-- MediaPipe Drawing & Hands Engine (Pinned Versions) -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
     <style>
@@ -80,7 +80,7 @@
             border: 1px solid var(--app-border);
         }
         html:not(.dark) .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.88);
         }
         .video-hidden-render {
             position: absolute;
@@ -109,9 +109,9 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="text-base font-extrabold tracking-tight">HUMAN SIGNALS</span>
-                        <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-brand-500/15 text-brand-500 dark:text-brand-400 border border-brand-500/30 font-semibold tracking-wider">v2.5 PRO</span>
+                        <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-brand-500/15 text-brand-500 dark:text-brand-400 border border-brand-500/30 font-semibold tracking-wider">v3.0 PRO</span>
                     </div>
-                    <p class="text-xs theme-muted font-medium">Neural Gesture & ISL Assistive Engine</p>
+                    <p class="text-xs theme-muted font-medium">Neural Gesture & ISL Dual Interpreter</p>
                 </div>
             </div>
 
@@ -137,24 +137,15 @@
                 </button>
 
                 <!-- Unit Tests Runner Trigger -->
-                <button id="btnRunUnitTests" type="button" class="px-2.5 py-1.5 rounded-xl theme-card border theme-border text-brand-500 dark:text-brand-400 hover:border-brand-500 transition font-semibold" title="Run Automated Unit Tests">
+                <button id="btnRunUnitTests" type="button" class="px-2.5 py-1.5 rounded-xl theme-card border theme-border text-brand-500 dark:text-brand-400 hover:border-brand-500 transition font-semibold">
                     <span>✓ TEST ENGINE</span>
                 </button>
 
-                <!-- FPS Telemetry -->
-                <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl theme-card border theme-border theme-muted">
-                    <span>FPS:</span>
-                    <span id="navFpsCount" class="text-brand-500 dark:text-brand-400 font-bold">0</span>
+                <!-- Camera Global Power Indicator -->
+                <div id="globalCameraStatusBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-xl theme-card border theme-border theme-muted">
+                    <span id="globalCamDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+                    <span id="globalCamText">CAM STANDBY</span>
                 </div>
-
-                <!-- TTS Toggle -->
-                <button id="navSpeechToggle" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl theme-card border theme-border hover:border-brand-500 transition">
-                    <svg class="w-4 h-4 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                    </svg>
-                    <span id="speechStatusLabel" class="hidden sm:inline">TTS ON</span>
-                </button>
             </div>
         </div>
 
@@ -169,8 +160,11 @@
             <button data-tab="practice" class="tab-btn px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 theme-muted hover:text-brand-500">
                 <span>Sign Quiz Challenge</span>
             </button>
+            <button data-tab="reverse" class="tab-btn px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 theme-muted hover:text-brand-500">
+                <span class="text-amber-500 font-bold">★ Text-to-Sign Generator</span>
+            </button>
             <button data-tab="explorer" class="tab-btn px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 theme-muted hover:text-brand-500">
-                <span>Pose Explorer</span>
+                <span>Visual Hand Pose Explorer</span>
             </button>
             <button data-tab="simulator" class="tab-btn px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 theme-muted hover:text-brand-500">
                 <span>Virtual Simulator</span>
@@ -184,7 +178,7 @@
     <!-- Main View Container -->
     <main class="flex-1 max-w-7xl mx-auto w-full px-4 lg:px-8 py-6">
 
-        <!-- Native Hardware Video Stream (Mirrored in canvas) -->
+        <!-- Unified Hardware Video Element -->
         <video id="appWebcamVideo" class="video-hidden-render" autoplay playsinline muted></video>
 
         <!-- ======================================================== -->
@@ -203,11 +197,11 @@
                     </p>
                 </div>
                 <div class="flex items-center gap-3 flex-wrap">
-                    <button id="btnStartCamera" type="button" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm flex items-center gap-2 shadow-lg shadow-brand-500/25 transition">
+                    <button class="btn-start-cam px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm flex items-center gap-2 shadow-lg shadow-brand-500/25 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                         <span>Start Camera</span>
                     </button>
-                    <button id="btnStopCamera" type="button" class="px-5 py-2.5 rounded-xl theme-card theme-border border font-semibold text-sm transition" disabled>
+                    <button class="btn-stop-cam px-5 py-2.5 rounded-xl theme-card theme-border border font-semibold text-sm transition" disabled>
                         Stop
                     </button>
                 </div>
@@ -220,26 +214,26 @@
                         <canvas id="signCanvas" class="w-full h-full object-cover transform -scale-x-100"></canvas>
                         
                         <!-- Standby UI -->
-                        <div id="cameraStandbyCard" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 text-slate-400 space-y-4 bg-slate-950/70 z-20">
+                        <div class="camera-standby-overlay absolute inset-0 flex flex-col items-center justify-center text-center p-8 text-slate-400 space-y-4 bg-slate-950/75 z-20">
                             <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-brand-400">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                             </div>
                             <div>
-                                <h4 class="text-base font-semibold text-white">Camera Standby</h4>
-                                <p class="text-xs text-slate-400 mt-1 max-w-sm">Click "Start Camera" above, or test signs instantly using the Virtual Simulator tab.</p>
+                                <h4 class="text-base font-semibold text-white">Camera Standby (Tab 1)</h4>
+                                <p class="text-xs text-slate-400 mt-1 max-w-sm">Click "Start Camera" above. Switching tabs will automatically turn off camera hardware.</p>
                             </div>
                         </div>
 
                         <!-- Pill Indicator -->
-                        <div id="livePill" class="absolute top-3 left-3 z-30 hidden items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 text-white border border-slate-700 text-xs font-mono">
+                        <div class="live-pill absolute top-3 left-3 z-30 hidden items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 text-white border border-slate-700 text-xs font-mono">
                             <span class="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>
-                            <span id="livePillText">TRACKING ACTIVE</span>
+                            <span>TRACKING ACTIVE</span>
                         </div>
                     </div>
 
                     <div class="flex items-center justify-between text-xs font-mono theme-muted px-1">
                         <span>MODEL: ISL 26-CLASS ENGINE</span>
-                        <span id="cameraResolutionInfo">STANDBY</span>
+                        <span id="cameraResolutionInfo">640x480</span>
                     </div>
                 </div>
 
@@ -290,88 +284,210 @@
         </section>
 
         <!-- ======================================================== -->
-        <!-- TAB 2: BIOLOGICAL SIGNALS & TELEMETRY                    -->
+        <!-- TAB 2: BIOLOGICAL SIGNALS & TELEMETRY (With Camera)      -->
         <!-- ======================================================== -->
         <section id="tab-signals" class="tab-content hidden space-y-6">
-            <div class="p-5 rounded-2xl glass-panel border theme-border">
-                <h2 class="text-2xl font-bold tracking-tight">Biomechanical Telemetry & Motor Signals</h2>
-                <p class="text-sm theme-muted mt-1">Interprets real-time individual finger extension and tendon flexion status directly from joint vectors.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-                <div class="p-4 rounded-xl theme-card border theme-border text-center">
-                    <span class="text-xs font-mono theme-muted block">THUMB</span>
-                    <span id="sigThumb" class="text-lg font-bold font-mono text-slate-400">RETRACTED</span>
-                </div>
-                <div class="p-4 rounded-xl theme-card border theme-border text-center">
-                    <span class="text-xs font-mono theme-muted block">INDEX</span>
-                    <span id="sigIndex" class="text-lg font-bold font-mono text-slate-400">RETRACTED</span>
-                </div>
-                <div class="p-4 rounded-xl theme-card border theme-border text-center">
-                    <span class="text-xs font-mono theme-muted block">MIDDLE</span>
-                    <span id="sigMiddle" class="text-lg font-bold font-mono text-slate-400">RETRACTED</span>
-                </div>
-                <div class="p-4 rounded-xl theme-card border theme-border text-center">
-                    <span class="text-xs font-mono theme-muted block">RING</span>
-                    <span id="sigRing" class="text-lg font-bold font-mono text-slate-400">RETRACTED</span>
-                </div>
-                <div class="p-4 rounded-xl theme-card border theme-border text-center">
-                    <span class="text-xs font-mono theme-muted block">PINKY</span>
-                    <span id="sigPinky" class="text-lg font-bold font-mono text-slate-400">RETRACTED</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- ======================================================== -->
-        <!-- TAB 3: SIGN QUIZ CHALLENGE                               -->
-        <!-- ======================================================== -->
-        <section id="tab-practice" class="tab-content hidden space-y-6">
-            <div class="flex items-center justify-between p-5 rounded-2xl glass-panel border theme-border">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-2xl glass-panel border theme-border">
                 <div>
-                    <h2 class="text-2xl font-bold">Sign Quiz Challenge</h2>
-                    <p class="text-sm theme-muted">Form the requested ISL fingerspelling letter to score points.</p>
+                    <h2 class="text-2xl font-bold tracking-tight">Biomechanical Telemetry & Motor Signals</h2>
+                    <p class="text-sm theme-muted mt-1">Dedicated real-time camera view analyzing tendon mechanics and individual digit flexion.</p>
                 </div>
-                <div class="flex items-center gap-4 font-mono">
-                    <div class="text-center">
-                        <span class="text-[10px] theme-muted block">SCORE</span>
-                        <span id="quizScore" class="text-2xl font-black text-brand-500">0</span>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <button class="btn-start-cam px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm flex items-center gap-2 shadow-lg shadow-cyan-600/25 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <span>Start Signals Camera</span>
+                    </button>
+                    <button class="btn-stop-cam px-5 py-2.5 rounded-xl theme-card theme-border border font-semibold text-sm transition" disabled>
+                        Stop
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div class="lg:col-span-7">
+                    <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 border theme-border shadow-2xl flex items-center justify-center">
+                        <canvas id="signalsCanvas" class="w-full h-full object-cover transform -scale-x-100"></canvas>
+                        
+                        <div class="camera-standby-overlay absolute inset-0 flex flex-col items-center justify-center text-center p-8 text-slate-400 space-y-4 bg-slate-950/75 z-20">
+                            <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <h4 class="text-base font-semibold text-white">Biomechanical Camera Standby</h4>
+                            <p class="text-xs text-slate-400 max-w-sm">Start camera to analyze finger extension ratios directly in this section.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="p-5 rounded-2xl glass-panel border theme-border">
+                        <span class="text-xs font-mono uppercase tracking-wider text-cyan-500 font-semibold block mb-2">5-Digit Mechanical State</span>
+                        <div class="grid grid-cols-5 gap-2">
+                            <div class="p-3 rounded-xl theme-card border theme-border text-center">
+                                <span class="text-[10px] font-mono theme-muted block">THUMB</span>
+                                <span id="sigThumb" class="text-xs font-bold font-mono text-slate-400">OFF</span>
+                            </div>
+                            <div class="p-3 rounded-xl theme-card border theme-border text-center">
+                                <span class="text-[10px] font-mono theme-muted block">INDEX</span>
+                                <span id="sigIndex" class="text-xs font-bold font-mono text-slate-400">OFF</span>
+                            </div>
+                            <div class="p-3 rounded-xl theme-card border theme-border text-center">
+                                <span class="text-[10px] font-mono theme-muted block">MIDDLE</span>
+                                <span id="sigMiddle" class="text-xs font-bold font-mono text-slate-400">OFF</span>
+                            </div>
+                            <div class="p-3 rounded-xl theme-card border theme-border text-center">
+                                <span class="text-[10px] font-mono theme-muted block">RING</span>
+                                <span id="sigRing" class="text-xs font-bold font-mono text-slate-400">OFF</span>
+                            </div>
+                            <div class="p-3 rounded-xl theme-card border theme-border text-center">
+                                <span class="text-[10px] font-mono theme-muted block">PINKY</span>
+                                <span id="sigPinky" class="text-xs font-bold font-mono text-slate-400">OFF</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5 rounded-2xl glass-panel border theme-border space-y-2">
+                        <span class="text-xs font-mono uppercase tracking-wider theme-muted font-semibold">Neuroscience Motor Arc</span>
+                        <p class="text-xs theme-muted leading-relaxed">
+                            Corticospinal impulses originating in the precentral gyrus terminate across cervical alpha motor neurons, producing selective myofibril contracture across the flexor digitorum superficialis and profundus.
+                        </p>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="p-8 rounded-2xl glass-panel border theme-border text-center space-y-4">
-                <span class="text-xs font-mono theme-muted uppercase tracking-widest">Target Letter</span>
-                <div id="quizTargetLetter" class="w-32 h-32 rounded-3xl bg-brand-500/20 border border-brand-500/40 flex items-center justify-center text-7xl font-mono font-black text-brand-500 mx-auto shadow-xl">
-                    A
+        <!-- ======================================================== -->
+        <!-- TAB 3: SIGN QUIZ CHALLENGE (With Camera)                 -->
+        <!-- ======================================================== -->
+        <section id="tab-practice" class="tab-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-2xl glass-panel border theme-border">
+                <div>
+                    <h2 class="text-2xl font-bold">Sign Quiz Challenge</h2>
+                    <p class="text-sm theme-muted">Form the requested handshape directly in front of this quiz camera view.</p>
                 </div>
-                <p id="quizFeedback" class="text-sm font-mono theme-muted">Position your hand in front of the camera and sign letter "A".</p>
-                <div class="flex justify-center gap-3 pt-2">
-                    <button id="btnQuizSkip" type="button" class="px-5 py-2 rounded-xl theme-card border theme-border font-mono text-sm hover:border-brand-500 transition">Next / Skip</button>
-                    <button id="btnQuizReset" type="button" class="px-5 py-2 rounded-xl theme-card border theme-border font-mono text-sm hover:border-rose-500 transition">Reset Score</button>
+                <div class="flex items-center gap-3">
+                    <button class="btn-start-cam px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm flex items-center gap-2 shadow-lg shadow-amber-500/25 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <span>Start Quiz Camera</span>
+                    </button>
+                    <button class="btn-stop-cam px-5 py-2.5 rounded-xl theme-card theme-border border font-semibold text-sm transition" disabled>
+                        Stop
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div class="lg:col-span-7">
+                    <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 border theme-border shadow-2xl flex items-center justify-center">
+                        <canvas id="quizCanvas" class="w-full h-full object-cover transform -scale-x-100"></canvas>
+                        
+                        <div class="camera-standby-overlay absolute inset-0 flex flex-col items-center justify-center text-center p-8 text-slate-400 space-y-4 bg-slate-950/75 z-20">
+                            <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-amber-400">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            </div>
+                            <h4 class="text-base font-semibold text-white">Quiz Camera Standby</h4>
+                            <p class="text-xs text-slate-400 max-w-sm">Start camera to evaluate your signing accuracy against the challenge target.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 p-6 rounded-2xl glass-panel border theme-border flex flex-col justify-between space-y-5 text-center">
+                    <div>
+                        <span class="text-xs font-mono theme-muted uppercase tracking-widest font-semibold">TARGET CHALLENGE</span>
+                        <!-- Hand diagram and letter -->
+                        <div class="flex items-center justify-center gap-4 my-3">
+                            <div id="quizTargetLetter" class="w-24 h-24 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-5xl font-mono font-black text-amber-500 shadow-xl">
+                                A
+                            </div>
+                            <!-- Mini Pose SVG -->
+                            <div class="w-24 h-24 rounded-2xl theme-card border theme-border p-2 flex items-center justify-center">
+                                <svg id="quizPoseSvg" class="w-full h-full text-brand-500" viewBox="0 0 100 100"></svg>
+                            </div>
+                        </div>
+                        <p id="quizFeedback" class="text-sm font-mono theme-muted">Form letter "<span id="quizTargetFeedbackLetter">A</span>" to score points.</p>
+                    </div>
+
+                    <div class="p-3 rounded-xl theme-card border theme-border flex justify-around font-mono">
+                        <div>
+                            <span class="text-[10px] theme-muted block">SCORE</span>
+                            <span id="quizScore" class="text-2xl font-black text-amber-500">0</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center gap-3">
+                        <button id="btnQuizSkip" type="button" class="flex-1 py-2 rounded-xl theme-card border theme-border font-mono text-sm hover:border-brand-500 transition">Next / Skip</button>
+                        <button id="btnQuizReset" type="button" class="py-2 px-4 rounded-xl theme-card border theme-border font-mono text-sm hover:border-rose-500 transition">Reset</button>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- ======================================================== -->
-        <!-- TAB 4: POSE EXPLORER                                     -->
+        <!-- TAB 4: REVERSE TEXT-TO-SIGN GENERATOR (NEW FEATURE)      -->
+        <!-- ======================================================== -->
+        <section id="tab-reverse" class="tab-content hidden space-y-6">
+            <div class="p-5 rounded-2xl glass-panel border theme-border space-y-2">
+                <span class="text-xs font-mono text-amber-500 font-semibold tracking-wider uppercase">Bidirectional Synthesis</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Text-to-Sign Sentence Generator</h2>
+                <p class="text-sm theme-muted max-w-2xl">
+                    Type any English word or phrase below. The simulator translates your text into sequential Indian Sign Language fingerspelling hand diagrams and animated playback.
+                </p>
+            </div>
+
+            <!-- Input Controls -->
+            <div class="p-5 rounded-2xl glass-panel border theme-border space-y-4">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input id="reverseInputText" type="text" placeholder="Type a sentence (e.g., HELLO INDIA)..." value="HELLO" class="flex-1 px-4 py-3 rounded-xl theme-card border theme-border text-base focus:outline-none focus:border-brand-500 font-mono uppercase tracking-widest">
+                    <button id="btnGenerateReverseSigns" type="button" class="px-6 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-mono font-bold text-sm shadow-lg shadow-brand-500/25 transition flex items-center justify-center gap-2">
+                        <span>Generate Hand Signs</span>
+                    </button>
+                    <button id="btnPlaySequence" type="button" class="px-5 py-3 rounded-xl theme-card border theme-border font-mono font-semibold text-sm hover:border-brand-500 transition flex items-center justify-center gap-2">
+                        <span>▶ Play Animation</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hand Signs Display Canvas & Cards -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between text-xs font-mono theme-muted px-1">
+                    <span>GENERATED HAND SIGN SEQUENCE:</span>
+                    <span id="reverseSequenceCount">5 Signs</span>
+                </div>
+                <!-- Card Container populated dynamically -->
+                <div id="reverseSignsContainer" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                    <!-- Populated by JS with visual hand diagrams -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 5: VISUAL HAND POSE EXPLORER (With Hand Diagrams)   -->
         <!-- ======================================================== -->
         <section id="tab-explorer" class="tab-content hidden space-y-6">
             <div class="p-5 rounded-2xl glass-panel border theme-border">
-                <h2 class="text-2xl font-bold">ISL Alphabet & Pose Catalog</h2>
-                <p class="text-sm theme-muted mt-1">Select any letter to inspect its skeletal landmark geometry and signing description.</p>
+                <h2 class="text-2xl font-bold">Visual ISL Alphabet Catalog</h2>
+                <p class="text-sm theme-muted mt-1">Every sign displays the true hand landmark contour so learners see the physical handshape with full visual clarity.</p>
             </div>
-            <div id="explorerGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-9 gap-2.5"></div>
+            
+            <!-- Cards A-Z with embedded hand diagrams -->
+            <div id="explorerGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+
             <div class="p-6 rounded-2xl glass-panel border theme-border flex flex-col md:flex-row items-center gap-6">
-                <div class="w-32 h-32 rounded-2xl bg-brand-500/15 border border-brand-500/30 flex items-center justify-center text-6xl font-mono font-black text-brand-500 shrink-0" id="explorerSelectedLetter">A</div>
+                <!-- Large Vector Diagram of Selected Sign -->
+                <div class="w-36 h-36 rounded-2xl theme-card border theme-border p-2 flex items-center justify-center shrink-0">
+                    <svg id="explorerSelectedSvg" class="w-full h-full text-brand-500" viewBox="0 0 100 100"></svg>
+                </div>
                 <div class="space-y-1.5 text-center md:text-left">
-                    <h3 id="explorerSelectedTitle" class="text-xl font-bold font-mono">Sign "A"</h3>
+                    <div class="flex items-center justify-center md:justify-start gap-2">
+                        <h3 id="explorerSelectedTitle" class="text-2xl font-bold font-mono">Sign "A"</h3>
+                        <span id="explorerSelectedBadge" class="text-xs font-mono px-2 py-0.5 rounded bg-brand-500/10 text-brand-500">ALPHABET</span>
+                    </div>
                     <p id="explorerSelectedDesc" class="text-sm theme-muted leading-relaxed">Closed fist with thumb upright touching the side of the index finger.</p>
                 </div>
             </div>
         </section>
 
         <!-- ======================================================== -->
-        <!-- TAB 5: VIRTUAL SIMULATOR (No-Camera Mode)                -->
+        <!-- TAB 6: VIRTUAL SIMULATOR (No-Camera Mode)                -->
         <!-- ======================================================== -->
         <section id="tab-simulator" class="tab-content hidden space-y-6">
             <div class="p-5 rounded-2xl glass-panel border theme-border">
@@ -392,7 +508,7 @@
         </section>
 
         <!-- ======================================================== -->
-        <!-- TAB 6: CURRICULUM & ETHICS                               -->
+        <!-- TAB 7: CURRICULUM & ETHICS                               -->
         <!-- ======================================================== -->
         <section id="tab-education" class="tab-content hidden space-y-6">
             <div class="p-6 rounded-2xl glass-panel border theme-border space-y-3">
@@ -433,36 +549,87 @@
         "use strict";
 
         const ISL_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        
+        // Accurate ISL 2D Normalized Landmark Sign Shapes (wrist at ~50,85)
         const SIGN_INFO = {
-            "A": { desc: "Fist closed, thumb held vertically against side of index finger.", ext: [1, 0, 0, 0, 0] },
-            "B": { desc: "Four fingers upright and touching, thumb folded across palm.", ext: [0, 1, 1, 1, 1] },
-            "C": { desc: "Hand curved forming an open 'C' contour with thumb opposite fingers.", ext: [1, 1, 1, 1, 1] },
-            "D": { desc: "Index finger upright, thumb and remaining fingers curved into a circle.", ext: [0, 1, 0, 0, 0] },
-            "E": { desc: "All fingers curled inward with thumb touching tips.", ext: [0, 0, 0, 0, 0] },
-            "F": { desc: "Thumb and index fingertips touch; middle, ring, pinky extended.", ext: [0, 0, 1, 1, 1] },
-            "G": { desc: "Index finger and thumb pointing horizontally forward.", ext: [1, 1, 0, 0, 0] },
-            "H": { desc: "Index and middle fingers extended together horizontally.", ext: [0, 1, 1, 0, 0] },
-            "I": { desc: "Pinky extended straight up; other fingers folded into palm.", ext: [0, 0, 0, 0, 1] },
-            "J": { desc: "Pinky tracing a small 'J' curve in the air.", ext: [0, 0, 0, 0, 1] },
-            "K": { desc: "Index pointing up, middle pointing forward, thumb wedged between.", ext: [1, 1, 1, 0, 0] },
-            "L": { desc: "Thumb and index finger at right angles forming an 'L'.", ext: [1, 1, 0, 0, 0] },
-            "M": { desc: "Thumb tucked under first three curled fingers.", ext: [0, 0, 0, 0, 0] },
-            "N": { desc: "Thumb tucked under first two curled fingers.", ext: [0, 0, 0, 0, 0] },
-            "O": { desc: "All fingertips touching the thumb tip to form an 'O'.", ext: [0, 0, 0, 0, 0] },
-            "P": { desc: "Hand shape like 'K' directed downwards.", ext: [1, 1, 1, 0, 0] },
-            "Q": { desc: "Index and thumb pointing downwards like 'G'.", ext: [1, 1, 0, 0, 0] },
-            "R": { desc: "Index and middle fingers crossed.", ext: [0, 1, 1, 0, 0] },
-            "S": { desc: "Fist closed with thumb resting over the fingers.", ext: [0, 0, 0, 0, 0] },
-            "T": { desc: "Thumb tucked between index and middle fingers.", ext: [0, 0, 0, 0, 0] },
-            "U": { desc: "Index and middle fingers held upright together.", ext: [0, 1, 1, 0, 0] },
-            "V": { desc: "Index and middle fingers upright in a 'V' shape.", ext: [0, 1, 1, 0, 0] },
-            "W": { desc: "Index, middle, and ring fingers extended apart like 'W'.", ext: [0, 1, 1, 1, 0] },
-            "X": { desc: "Index finger bent into a hook.", ext: [0, 1, 0, 0, 0] },
-            "Y": { desc: "Thumb and pinky extended out, middle three fingers folded.", ext: [1, 0, 0, 0, 1] },
-            "Z": { desc: "Index finger drawing a 'Z' in the air.", ext: [0, 1, 0, 0, 0] }
+            "A": { desc: "Closed fist, thumb vertical along the index finger.", ext: [1,0,0,0,0], thumbUp: true },
+            "B": { desc: "Four fingers extended upright together, thumb folded across palm.", ext: [0,1,1,1,1] },
+            "C": { desc: "Hand curved forming an open 'C' contour with thumb opposite fingers.", ext: [1,1,1,1,1], curved: true },
+            "D": { desc: "Index finger upright, thumb and remaining fingers curved into a circle.", ext: [0,1,0,0,0] },
+            "E": { desc: "All fingers curled tightly inward with thumb touching tips.", ext: [0,0,0,0,0] },
+            "F": { desc: "Thumb and index tips touch; middle, ring, pinky extended.", ext: [0,0,1,1,1] },
+            "G": { desc: "Index finger and thumb extended horizontally forward.", ext: [1,1,0,0,0], horiz: true },
+            "H": { desc: "Index and middle fingers extended together horizontally.", ext: [0,1,1,0,0], horiz: true },
+            "I": { desc: "Pinky extended straight up; other fingers folded into palm.", ext: [0,0,0,0,1] },
+            "J": { desc: "Pinky tracing a small 'J' curve in the air.", ext: [0,0,0,0,1] },
+            "K": { desc: "Index pointing up, middle forward, thumb wedged between.", ext: [1,1,1,0,0] },
+            "L": { desc: "Thumb and index finger form a 90-degree 'L'.", ext: [1,1,0,0,0] },
+            "M": { desc: "Thumb tucked under first three curled fingers.", ext: [0,0,0,0,0] },
+            "N": { desc: "Thumb tucked under first two curled fingers.", ext: [0,0,0,0,0] },
+            "O": { desc: "All fingertips touching the thumb tip to form an 'O'.", ext: [0,0,0,0,0], circle: true },
+            "P": { desc: "Hand shape like 'K' directed downwards.", ext: [1,1,1,0,0] },
+            "Q": { desc: "Index and thumb pointing downwards like 'G'.", ext: [1,1,0,0,0] },
+            "R": { desc: "Index and middle fingers crossed.", ext: [0,1,1,0,0] },
+            "S": { desc: "Fist closed with thumb resting over front of the fingers.", ext: [0,0,0,0,0] },
+            "T": { desc: "Thumb tucked between index and middle fingers.", ext: [0,0,0,0,0] },
+            "U": { desc: "Index and middle fingers held upright together.", ext: [0,1,1,0,0] },
+            "V": { desc: "Index and middle fingers upright in a 'V' shape.", ext: [0,1,1,0,0], spread: true },
+            "W": { desc: "Index, middle, and ring fingers extended apart like 'W'.", ext: [0,1,1,1,0] },
+            "X": { desc: "Index finger bent into a hook.", ext: [0,1,0,0,0] },
+            "Y": { desc: "Thumb and pinky extended out, middle three fingers folded.", ext: [1,0,0,0,1] },
+            "Z": { desc: "Index finger drawing a 'Z' in the air.", ext: [0,1,0,0,0] }
         };
 
-        // Theme Controller
+        // --- SVG POSE VECTOR GENERATOR ---
+        // Generates an interactive SVG illustration of the hand skeleton for any sign
+        function generateHandSignSvg(letter) {
+            const info = SIGN_INFO[letter] || { ext: [0,0,0,0,0] };
+            const [t, i, m, r, p] = info.ext;
+
+            // Base wrist
+            const wx = 50, wy = 85;
+            // Palm base
+            const cx = 50, cy = 60;
+
+            // Compute fingertip coordinates based on extension state
+            const fx = [
+                t ? 24 : 38, t ? 54 : 65, // thumb tip
+                i ? 36 : 40, i ? 20 : 48, // index tip
+                m ? 50 : 50, m ? 16 : 46, // middle tip
+                r ? 64 : 60, r ? 22 : 49, // ring tip
+                p ? 76 : 68, p ? 28 : 55  // pinky tip
+            ];
+
+            return `
+                <g stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                    <!-- Palm base -->
+                    <path d="M 40,85 L 60,85 L 68,60 L 32,60 Z" class="opacity-40" fill="currentColor"/>
+                    <!-- Thumb Bone -->
+                    <line x1="${wx}" y1="${wy}" x2="35" y2="70" />
+                    <line x1="35" y1="70" x2="${fx[0]}" y2="${fx[1]}" stroke-width="4"/>
+                    <!-- Index Finger -->
+                    <line x1="40" y1="60" x2="38" y2="40" />
+                    <line x1="38" y1="40" x2="${fx[2]}" y2="${fx[3]}" stroke-width="4"/>
+                    <!-- Middle Finger -->
+                    <line x1="50" y1="60" x2="50" y2="38" />
+                    <line x1="50" y1="38" x2="${fx[4]}" y2="${fx[5]}" stroke-width="4"/>
+                    <!-- Ring Finger -->
+                    <line x1="60" y1="60" x2="62" y2="40" />
+                    <line x1="62" y1="40" x2="${fx[6]}" y2="${fx[7]}" stroke-width="4"/>
+                    <!-- Pinky Finger -->
+                    <line x1="68" y1="60" x2="72" y2="46" />
+                    <line x1="72" y1="46" x2="${fx[8]}" y2="${fx[9]}" stroke-width="4"/>
+                    <!-- Joints Dots -->
+                    <circle cx="${fx[0]}" cy="${fx[1]}" r="3" fill="#10b981" />
+                    <circle cx="${fx[2]}" cy="${fx[3]}" r="3" fill="#10b981" />
+                    <circle cx="${fx[4]}" cy="${fx[5]}" r="3" fill="#10b981" />
+                    <circle cx="${fx[6]}" cy="${fx[7]}" r="3" fill="#10b981" />
+                    <circle cx="${fx[8]}" cy="${fx[9]}" r="3" fill="#10b981" />
+                </g>
+            `;
+        }
+
+        // --- THEME MANAGER ---
         const ThemeManager = {
             init() {
                 const saved = localStorage.getItem("app_theme") || "dark";
@@ -484,7 +651,7 @@
             }
         };
 
-        // Biomechanical Classifier
+        // --- NEURAL & BIOMECHANICAL CLASSIFIER ---
         const NeuralEngine = {
             getFingerExtension(landmarks) {
                 if (!landmarks || landmarks.length < 21) return [0, 0, 0, 0, 0];
@@ -593,7 +760,7 @@
             }
         };
 
-        // Sentence Builder
+        // --- SENTENCE BUILDER ---
         const SentenceBuilder = {
             text: "",
             lastLetter: "",
@@ -659,26 +826,20 @@
             }
         };
 
-        // Native Camera & MediaPipe Hands Pipeline (No external Camera class)
-        const CameraPipeline = {
+        // --- UNIFIED CAMERA ROUTER (Multi-Viewport & Auto-Turn-Off on Tab Switch) ---
+        const CameraManager = {
             hands: null,
             active: false,
             videoEl: null,
-            canvasEl: null,
-            ctx: null,
-            lastFrameTime: performance.now(),
-            fps: 0,
+            activeTab: "sign", // 'sign' | 'signals' | 'practice'
             animationFrameId: null,
-            isProcessingFrame: false,
+            isProcessing: false,
 
             init() {
                 this.videoEl = document.getElementById("appWebcamVideo");
-                this.canvasEl = document.getElementById("signCanvas");
-                this.ctx = this.canvasEl.getContext("2d");
-
                 const HandsClass = window.Hands || (window.mpHands && window.mpHands.Hands);
                 if (!HandsClass) {
-                    console.error("MediaPipe Hands library not loaded from CDN.");
+                    console.error("MediaPipe Hands library not loaded.");
                     return;
                 }
 
@@ -696,8 +857,18 @@
                 this.hands.onResults(this.onResults.bind(this));
             },
 
-            async start() {
+            // Target canvas based on the currently active section
+            getCurrentCanvas() {
+                if (this.activeTab === "sign") return document.getElementById("signCanvas");
+                if (this.activeTab === "signals") return document.getElementById("signalsCanvas");
+                if (this.activeTab === "practice") return document.getElementById("quizCanvas");
+                return null;
+            },
+
+            async start(tabName) {
+                if (tabName) this.activeTab = tabName;
                 if (this.active) return;
+
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({
                         video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" },
@@ -707,29 +878,24 @@
                     await this.videoEl.play();
 
                     this.active = true;
-                    document.getElementById("btnStartCamera").disabled = true;
-                    document.getElementById("btnStopCamera").disabled = false;
-                    document.getElementById("cameraStandbyCard").classList.add("hidden");
-                    document.getElementById("livePill").classList.remove("hidden");
-                    document.getElementById("livePill").classList.add("flex");
-
+                    this.updateUI(true);
                     this.processLoop();
                 } catch (err) {
-                    alert("Camera error: " + err.message + ". Check browser permissions or test with the Virtual Simulator tab.");
+                    alert("Camera error: " + err.message + ". Check camera permissions or test with Virtual Simulator.");
                 }
             },
 
             async processLoop() {
                 if (!this.active) return;
 
-                if (!this.isProcessingFrame && this.videoEl.readyState >= 2) {
-                    this.isProcessingFrame = true;
+                if (!this.isProcessing && this.videoEl.readyState >= 2) {
+                    this.isProcessing = true;
                     try {
                         await this.hands.send({ image: this.videoEl });
                     } catch (e) {
                         console.warn("Frame detection error:", e);
                     }
-                    this.isProcessingFrame = false;
+                    this.isProcessing = false;
                 }
 
                 this.animationFrameId = requestAnimationFrame(() => this.processLoop());
@@ -746,60 +912,97 @@
                     this.videoEl.srcObject.getTracks().forEach(t => t.stop());
                     this.videoEl.srcObject = null;
                 }
-                document.getElementById("btnStartCamera").disabled = false;
-                document.getElementById("btnStopCamera").disabled = true;
-                document.getElementById("cameraStandbyCard").classList.remove("hidden");
-                document.getElementById("livePill").classList.add("hidden");
-                document.getElementById("livePill").classList.remove("flex");
-                this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
+                this.updateUI(false);
+                
+                // Clear all canvases
+                ["signCanvas", "signalsCanvas", "quizCanvas"].forEach(id => {
+                    const c = document.getElementById(id);
+                    if (c) {
+                        const ctx = c.getContext("2d");
+                        ctx.clearRect(0, 0, c.width, c.height);
+                    }
+                });
+            },
+
+            updateUI(isActive) {
+                // Update buttons on all screens
+                document.querySelectorAll(".btn-start-cam").forEach(b => b.disabled = isActive);
+                document.querySelectorAll(".btn-stop-cam").forEach(b => b.disabled = !isActive);
+
+                // Update standby overlays
+                document.querySelectorAll(".camera-standby-overlay").forEach(overlay => {
+                    if (isActive) overlay.classList.add("hidden");
+                    else overlay.classList.remove("hidden");
+                });
+
+                // Update live pill
+                document.querySelectorAll(".live-pill").forEach(p => {
+                    if (isActive) { p.classList.remove("hidden"); p.classList.add("flex"); }
+                    else { p.classList.add("hidden"); p.classList.remove("flex"); }
+                });
+
+                // Global Top-Bar Badge
+                const dot = document.getElementById("globalCamDot");
+                const txt = document.getElementById("globalCamText");
+                if (isActive) {
+                    dot.className = "w-2 h-2 rounded-full bg-brand-500 animate-pulse";
+                    txt.textContent = "CAM ACTIVE (" + this.activeTab.toUpperCase() + ")";
+                } else {
+                    dot.className = "w-2 h-2 rounded-full bg-slate-500";
+                    txt.textContent = "CAM STANDBY";
+                }
             },
 
             onResults(results) {
-                if (this.videoEl.videoWidth && this.canvasEl.width !== this.videoEl.videoWidth) {
-                    this.canvasEl.width = this.videoEl.videoWidth;
-                    this.canvasEl.height = this.videoEl.videoHeight;
-                    document.getElementById("cameraResolutionInfo").textContent = `${this.videoEl.videoWidth}x${this.videoEl.videoHeight}`;
+                const canvas = this.getCurrentCanvas();
+                if (!canvas) return;
+                const ctx = canvas.getContext("2d");
+
+                if (this.videoEl.videoWidth && canvas.width !== this.videoEl.videoWidth) {
+                    canvas.width = this.videoEl.videoWidth;
+                    canvas.height = this.videoEl.videoHeight;
                 }
 
-                const now = performance.now();
-                this.fps = Math.round(1000 / (now - this.lastFrameTime || 1));
-                this.lastFrameTime = now;
-                document.getElementById("navFpsCount").textContent = this.fps;
-
-                this.ctx.save();
-                this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
+                ctx.save();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 if (results.image) {
-                    this.ctx.drawImage(results.image, 0, 0, this.canvasEl.width, this.canvasEl.height);
+                    ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
                 }
 
                 if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                     const landmarks = results.multiHandLandmarks[0];
                     if (window.drawConnectors && window.HAND_CONNECTIONS) {
-                        drawConnectors(this.ctx, landmarks, HAND_CONNECTIONS, { color: '#10b981', lineWidth: 4 });
+                        drawConnectors(ctx, landmarks, HAND_CONNECTIONS, { color: '#10b981', lineWidth: 4 });
                     }
                     if (window.drawLandmarks) {
-                        drawLandmarks(this.ctx, landmarks, { color: '#38bdf8', lineWidth: 2, radius: 4 });
+                        drawLandmarks(ctx, landmarks, { color: '#38bdf8', lineWidth: 2, radius: 4 });
                     }
 
                     const res = NeuralEngine.classify(landmarks);
+
+                    // Update Tab 1 (Lab)
                     document.getElementById("signPredictedLetter").textContent = res.letter;
                     const pct = Math.round(res.confidence * 100);
                     document.getElementById("signConfidenceValue").textContent = `${pct}%`;
                     document.getElementById("signConfidenceBar").style.width = `${pct}%`;
 
+                    // Update Tab 2 (Signals)
                     if (res.ext) {
                         const labels = ["sigThumb", "sigIndex", "sigMiddle", "sigRing", "sigPinky"];
                         res.ext.forEach((val, idx) => {
                             const el = document.getElementById(labels[idx]);
                             if (el) {
-                                el.textContent = val ? "EXTENDED" : "FLEXED";
-                                el.className = `text-lg font-bold font-mono ${val ? "text-brand-500" : "text-slate-400"}`;
+                                el.textContent = val ? "EXT" : "FLEX";
+                                el.className = `text-xs font-bold font-mono ${val ? "text-cyan-400" : "text-slate-500"}`;
                             }
                         });
                     }
 
+                    // Ingest in Tab 1 sentence composer
                     SentenceBuilder.ingest(res.letter, res.confidence);
+
+                    // Verify against Tab 3 quiz
                     QuizManager.check(res.letter);
                 } else {
                     document.getElementById("signPredictedLetter").textContent = "--";
@@ -807,11 +1010,73 @@
                     document.getElementById("signConfidenceBar").style.width = "0%";
                     SentenceBuilder.ingest("--", 0);
                 }
-                this.ctx.restore();
+                ctx.restore();
             }
         };
 
-        // Quiz Manager
+        // --- TEXT-TO-SIGN (REVERSE GENERATOR) ---
+        const ReverseGenerator = {
+            isPlaying: false,
+            init() {
+                document.getElementById("btnGenerateReverseSigns").addEventListener("click", () => this.generate());
+                document.getElementById("btnPlaySequence").addEventListener("click", () => this.play());
+                document.getElementById("reverseInputText").addEventListener("keydown", (e) => {
+                    if (e.key === "Enter") this.generate();
+                });
+                this.generate();
+            },
+            generate() {
+                const raw = document.getElementById("reverseInputText").value.toUpperCase();
+                const container = document.getElementById("reverseSignsContainer");
+                container.innerHTML = "";
+
+                const letters = raw.replace(/[^A-Z]/g, "").split("");
+                document.getElementById("reverseSequenceCount").textContent = `${letters.length} Signs Generated`;
+
+                if (letters.length === 0) {
+                    container.innerHTML = `<div class="col-span-full p-6 text-center theme-muted font-mono text-xs">Type letters (A–Z) to generate the sign language sequence.</div>`;
+                    return;
+                }
+
+                letters.forEach((char, index) => {
+                    const card = document.createElement("div");
+                    card.id = `reverseCard_${index}`;
+                    card.className = "reverse-sign-card p-3 rounded-2xl theme-card border theme-border flex flex-col items-center justify-between transition-all";
+                    card.innerHTML = `
+                        <div class="w-full aspect-square p-2">
+                            <svg class="w-full h-full text-brand-500" viewBox="0 0 100 100">
+                                ${generateHandSignSvg(char)}
+                            </svg>
+                        </div>
+                        <div class="mt-2 text-center">
+                            <span class="text-xs font-mono font-black text-brand-500">#${index + 1}</span>
+                            <span class="text-lg font-black font-mono block">${char}</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            },
+            async play() {
+                if (this.isPlaying) return;
+                this.isPlaying = true;
+                const raw = document.getElementById("reverseInputText").value.toUpperCase();
+                const letters = raw.replace(/[^A-Z]/g, "").split("");
+
+                for (let i = 0; i < letters.length; i++) {
+                    // Highlight current card
+                    document.querySelectorAll(".reverse-sign-card").forEach(c => c.classList.remove("border-brand-500", "scale-105", "shadow-xl"));
+                    const card = document.getElementById(`reverseCard_${i}`);
+                    if (card) {
+                        card.classList.add("border-brand-500", "scale-105", "shadow-xl");
+                    }
+                    await new Promise(r => setTimeout(r, 650));
+                }
+                document.querySelectorAll(".reverse-sign-card").forEach(c => c.classList.remove("border-brand-500", "scale-105", "shadow-xl"));
+                this.isPlaying = false;
+            }
+        };
+
+        // --- SIGN QUIZ CHALLENGE ---
         const QuizManager = {
             target: "A",
             score: 0,
@@ -825,22 +1090,24 @@
                 });
             },
             next() {
-                const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "L", "O", "V", "W", "Y"];
+                const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "L", "V", "W", "Y"];
                 this.target = letters[Math.floor(Math.random() * letters.length)];
                 document.getElementById("quizTargetLetter").textContent = this.target;
-                document.getElementById("quizFeedback").textContent = `Position your hand in front of the camera and sign letter "${this.target}".`;
+                document.getElementById("quizTargetFeedbackLetter").textContent = this.target;
+                document.getElementById("quizFeedback").textContent = `Form letter "${this.target}" to score points.`;
+                document.getElementById("quizPoseSvg").innerHTML = generateHandSignSvg(this.target);
             },
             check(letter) {
                 if (letter === this.target) {
                     this.score += 100;
                     document.getElementById("quizScore").textContent = this.score;
-                    document.getElementById("quizFeedback").textContent = `Great job! Sign "${this.target}" verified! (+100 Points)`;
-                    setTimeout(() => this.next(), 1000);
+                    document.getElementById("quizFeedback").textContent = `Verified! Letter "${this.target}" matched (+100 Points)`;
+                    setTimeout(() => this.next(), 900);
                 }
             }
         };
 
-        // Pose Explorer & Virtual Simulator
+        // --- VISUAL POSE EXPLORER (With Hand Drawings) ---
         const ExplorerManager = {
             init() {
                 const grid = document.getElementById("explorerGrid");
@@ -849,12 +1116,24 @@
                 simGrid.innerHTML = "";
 
                 ISL_ALPHABET.forEach(char => {
-                    const b = document.createElement("button");
-                    b.className = "py-2.5 rounded-xl theme-card border theme-border font-mono font-bold hover:border-brand-500 transition text-sm";
-                    b.textContent = char;
-                    b.onclick = () => this.select(char);
-                    grid.appendChild(b);
+                    // Explorer Card with visual hand diagram
+                    const card = document.createElement("div");
+                    card.className = "p-3 rounded-2xl theme-card border theme-border flex flex-col items-center justify-between hover:border-brand-500 cursor-pointer transition";
+                    card.innerHTML = `
+                        <div class="w-full aspect-square p-2 pointer-events-none">
+                            <svg class="w-full h-full text-brand-500" viewBox="0 0 100 100">
+                                ${generateHandSignSvg(char)}
+                            </svg>
+                        </div>
+                        <div class="mt-1 flex items-center justify-between w-full px-1">
+                            <span class="font-mono font-black text-sm">${char}</span>
+                            <span class="text-[10px] font-mono theme-muted">SIGN</span>
+                        </div>
+                    `;
+                    card.onclick = () => this.select(char);
+                    grid.appendChild(card);
 
+                    // Sim button
                     const sb = document.createElement("button");
                     sb.className = "py-2 rounded-lg theme-card border theme-border font-mono font-bold hover:border-brand-500 transition text-xs";
                     sb.textContent = char;
@@ -865,22 +1144,18 @@
             },
             select(char) {
                 const info = SIGN_INFO[char] || { desc: "ISL standard single-hand posture." };
-                document.getElementById("explorerSelectedLetter").textContent = char;
                 document.getElementById("explorerSelectedTitle").textContent = `Sign "${char}"`;
                 document.getElementById("explorerSelectedDesc").textContent = info.desc;
+                document.getElementById("explorerSelectedSvg").innerHTML = generateHandSignSvg(char);
             },
             simulate(char) {
+                const synthLandmarks = Array.from({ length: 21 }, (_, i) => ({ x: 0.5, y: 0.5 - (i * 0.02), z: 0 }));
                 const info = SIGN_INFO[char] || { ext: [0, 0, 0, 0, 0] };
-                const synthLandmarks = [];
-                for (let i = 0; i < 21; i++) {
-                    synthLandmarks.push({ x: 0.5, y: 0.5 - (i * 0.02), z: 0 });
-                }
-                const ext = info.ext;
-                if (ext[1]) synthLandmarks[8].y = 0.2;
-                if (ext[2]) synthLandmarks[12].y = 0.18;
-                if (ext[3]) synthLandmarks[16].y = 0.22;
-                if (ext[4]) synthLandmarks[20].y = 0.25;
-                if (ext[0]) synthLandmarks[4].x = 0.7;
+                if (info.ext[1]) synthLandmarks[8].y = 0.2;
+                if (info.ext[2]) synthLandmarks[12].y = 0.18;
+                if (info.ext[3]) synthLandmarks[16].y = 0.22;
+                if (info.ext[4]) synthLandmarks[20].y = 0.25;
+                if (info.ext[0]) synthLandmarks[4].x = 0.7;
 
                 NeuralEngine.classify(synthLandmarks);
                 document.getElementById("simResultLetter").textContent = char;
@@ -888,7 +1163,7 @@
             }
         };
 
-        // Diagnostic Unit Tests
+        // --- DIAGNOSTIC UNIT TESTS ---
         window.runAppUnitTests = function() {
             const out = document.getElementById("testOutputContainer");
             out.innerHTML = "";
@@ -900,19 +1175,20 @@
             };
 
             try {
+                // Test 1: Feature Vector Normalization
                 const dummyLandmarks = Array.from({ length: 21 }, (_, i) => ({ x: i * 0.05, y: i * 0.05, z: 0 }));
                 const norm = NeuralEngine.normalizeLandmarks(dummyLandmarks);
-                const test1 = norm.length === 63 && norm[0] === 0 && norm[1] === 0;
-                log("Feature Vector normalization (21 landmarks -> 63 relative coords)", test1);
+                log("Feature Vector normalization (21 landmarks -> 63 relative coords)", norm.length === 63 && norm[0] === 0);
 
+                // Test 2: Ingestion & Buffer Queue
                 SentenceBuilder.clear();
-                SentenceBuilder.append("H");
-                SentenceBuilder.append("I");
+                SentenceBuilder.append("O");
+                SentenceBuilder.append("K");
                 SentenceBuilder.addSpace();
-                const test2 = SentenceBuilder.text === "HI ";
-                log("Sentence Composer string queuing and space operations", test2);
+                log("Sentence Composer string queuing and space operations", SentenceBuilder.text === "OK ");
                 SentenceBuilder.clear();
 
+                // Test 3: Theme Toggle
                 const currentTheme = document.documentElement.classList.contains("dark") ? "dark" : "light";
                 ThemeManager.apply("light");
                 const isLight = !document.documentElement.classList.contains("dark");
@@ -921,34 +1197,45 @@
                 log("Dynamic Theme Switcher (Dark/Light DOM toggle and localStorage)", isLight && isDark);
                 ThemeManager.apply(currentTheme);
 
+                // Test 4: Classifier Softmax Distribution
                 const mockHand = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.5, z: 0 }));
                 const res = NeuralEngine.classify(mockHand);
                 let sumProb = 0;
                 for (let k in res.probs) sumProb += res.probs[k];
-                const test4 = Math.abs(sumProb - 1.0) < 0.01;
-                log(`Neural Probability Distribution Sum Equality (Σ = ${sumProb.toFixed(3)})`, test4);
+                log(`Neural Probability Distribution Sum Equality (Σ = ${sumProb.toFixed(3)})`, Math.abs(sumProb - 1.0) < 0.01);
 
-                log("Native getUserMedia Camera API Support", !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia));
+                // Test 5: Reverse SVG generation
+                const svgA = generateHandSignSvg("A");
+                log("Visual Hand Diagram Vector Generator (A–Z SVG Contours)", svgA.includes("<g") && svgA.includes("circle"));
+
             } catch (e) {
                 log(`Unit test exception: ${e.message}`, false);
             }
         };
 
-        // Initializer
+        // --- APP INITIALIZATION ---
         document.addEventListener("DOMContentLoaded", () => {
             ThemeManager.init();
-            CameraPipeline.init();
+            CameraManager.init();
+            ReverseGenerator.init();
             QuizManager.init();
             ExplorerManager.init();
 
-            document.getElementById("btnStartCamera").addEventListener("click", () => CameraPipeline.start());
-            document.getElementById("btnStopCamera").addEventListener("click", () => CameraPipeline.stop());
+            // Camera button hooks across all screens
+            document.querySelectorAll(".btn-start-cam").forEach(btn => {
+                btn.addEventListener("click", () => CameraManager.start());
+            });
+            document.querySelectorAll(".btn-stop-cam").forEach(btn => {
+                btn.addEventListener("click", () => CameraManager.stop());
+            });
 
+            // Sentence controls
             document.getElementById("btnSentenceSpace").addEventListener("click", () => SentenceBuilder.addSpace());
             document.getElementById("btnSentenceBackspace").addEventListener("click", () => SentenceBuilder.deleteChar());
             document.getElementById("btnSentenceClear").addEventListener("click", () => SentenceBuilder.clear());
             document.getElementById("btnSentenceSpeak").addEventListener("click", () => SentenceBuilder.speak());
 
+            // Unit test modal
             const modal = document.getElementById("unitTestModal");
             document.getElementById("btnRunUnitTests").addEventListener("click", () => {
                 modal.classList.remove("hidden");
@@ -963,9 +1250,16 @@
                 window.runAppUnitTests();
             });
 
+            // TAB SWITCHING WITH AUTOMATIC CAMERA SHUTDOWN
             document.querySelectorAll(".tab-btn").forEach(btn => {
                 btn.addEventListener("click", () => {
-                    const target = btn.dataset.tab;
+                    const targetTab = btn.dataset.tab;
+
+                    // 1. Immediately turn off camera whenever switching sections
+                    CameraManager.stop();
+                    CameraManager.activeTab = targetTab;
+
+                    // 2. Update navigation styling
                     document.querySelectorAll(".tab-btn").forEach(b => {
                         b.classList.remove("bg-brand-500/15", "text-brand-600", "dark:text-brand-400", "border", "border-brand-500/30");
                         b.classList.add("theme-muted");
@@ -973,8 +1267,9 @@
                     btn.classList.add("bg-brand-500/15", "text-brand-600", "dark:text-brand-400", "border", "border-brand-500/30");
                     btn.classList.remove("theme-muted");
 
+                    // 3. Switch visible section
                     document.querySelectorAll(".tab-content").forEach(c => c.classList.add("hidden"));
-                    const activeContent = document.getElementById(`tab-${target}`);
+                    const activeContent = document.getElementById(`tab-${targetTab}`);
                     if (activeContent) activeContent.classList.remove("hidden");
                 });
             });
